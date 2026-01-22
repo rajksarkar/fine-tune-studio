@@ -5,7 +5,7 @@ export default function Home() {
     <div className="max-w-4xl mx-auto">
       <h1 className="text-4xl font-bold mb-6">Fine-Tune Studio</h1>
       <p className="text-lg text-gray-600 mb-8">
-        Orchestrate OpenAI fine-tuning for GPT-4o mini and GPT-4o
+        Orchestrate OpenAI fine-tuning for supported models (gpt-3.5-turbo, gpt-4-0613, and others)
       </p>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Link href="/convert" className="block p-6 border rounded-lg hover:bg-gray-50">

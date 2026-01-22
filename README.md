@@ -1,6 +1,6 @@
 # Fine-Tune Studio
 
-A local web application for orchestrating OpenAI fine-tuning for GPT-4o mini and GPT-4o. Built with Next.js, TypeScript, Tailwind CSS, and Prisma with SQLite.
+A local web application for orchestrating OpenAI fine-tuning for supported models (gpt-3.5-turbo, gpt-4-0613, babbage-002, davinci-002, and others). Built with Next.js, TypeScript, Tailwind CSS, and Prisma with SQLite.
 
 ## Features
 
