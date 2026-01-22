@@ -1,0 +1,81 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { openai } from '@/lib/openai'
+import { prisma } from '@/lib/prisma'
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json()
+    const { training_file_id, validation_file_id, model } = body
+
+    if (!training_file_id || !model) {
+      return NextResponse.json(
+        { error: 'training_file_id and model are required' },
+        { status: 400 }
+      )
+    }
+
+    // Get file IDs from database
+    const trainingFile = await prisma.fineTuneFile.findUnique({
+      where: { id: training_file_id },
+    })
+
+    if (!trainingFile) {
+      return NextResponse.json(
+        { error: 'Training file not found' },
+        { status: 404 }
+      )
+    }
+
+    let validationFileId: string | undefined
+    if (validation_file_id) {
+      const validationFile = await prisma.fineTuneFile.findUnique({
+        where: { id: validation_file_id },
+      })
+      if (!validationFile) {
+        return NextResponse.json(
+          { error: 'Validation file not found' },
+          { status: 404 }
+        )
+      }
+      validationFileId = validationFile.openai_file_id
+    }
+
+    // Create fine-tuning job with OpenAI
+    const jobParams: any = {
+      model: model,
+      training_file: trainingFile.openai_file_id,
+    }
+    if (validationFileId) {
+      jobParams.validation_file = validationFileId
+    }
+
+    const openaiJob = await openai.fineTuning.jobs.create(jobParams)
+
+    // Store job in database
+    const dbJob = await prisma.fineTuneJob.create({
+      data: {
+        openai_job_id: openaiJob.id,
+        base_model: model,
+        training_file_id: training_file_id,
+        validation_file_id: validation_file_id || null,
+        status: openaiJob.status,
+        fine_tuned_model: openaiJob.fine_tuned_model || null,
+      },
+    })
+
+    return NextResponse.json({
+      id: dbJob.id,
+      openai_job_id: dbJob.openai_job_id,
+      status: dbJob.status,
+      base_model: dbJob.base_model,
+      fine_tuned_model: dbJob.fine_tuned_model,
+      createdAt: dbJob.createdAt,
+    })
+  } catch (error: any) {
+    console.error('Fine-tune job creation error:', error)
+    return NextResponse.json(
+      { error: error.message || 'Failed to create fine-tuning job' },
+      { status: 500 }
+    )
+  }
+}

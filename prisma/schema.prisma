@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model FineTuneFile {
+  id            String   @id @default(cuid())
+  filename      String
+  openai_file_id String  @unique
+  bytes         Int
+  createdAt     DateTime @default(now())
+
+  trainingJobs  FineTuneJob[] @relation("TrainingFile")
+  validationJobs FineTuneJob[] @relation("ValidationFile")
+}
+
+model FineTuneJob {
+  id                String   @id @default(cuid())
+  openai_job_id     String   @unique
+  base_model        String
+  training_file_id  String
+  validation_file_id String?
+  status            String
+  fine_tuned_model  String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  trainingFile      FineTuneFile @relation("TrainingFile", fields: [training_file_id], references: [id])
+  validationFile    FineTuneFile? @relation("ValidationFile", fields: [validation_file_id], references: [id])
+}
+
+model TestRun {
+  id        String   @id @default(cuid())
+  prompt    String
+  model     String
+  output    String
+  createdAt DateTime @default(now())
+}
+
+model ABRun {
+  id        String   @id @default(cuid())
+  prompt    String
+  modelA    String
+  outputA   String
+  modelB    String
+  outputB   String
+  winner    String?
+  notes     String?
+  createdAt DateTime @default(now())
+}
+
+model TrainingDraft {
+  id           String   @id @default(cuid())
+  prompt       String
+  ideal_answer String
+  createdAt    DateTime @default(now())
+}
