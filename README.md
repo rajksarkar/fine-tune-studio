@@ -84,7 +84,15 @@ A local web application for orchestrating OpenAI fine-tuning for GPT-4o mini and
 ### Training Models
 
 1. Go to the **Train** page (`/train`)
-2. Select a base model (gpt-4o-mini or gpt-4o)
+2. Select a base model that supports fine-tuning:
+   - **gpt-3.5-turbo** (recommended)
+   - **gpt-3.5-turbo-1106**
+   - **gpt-3.5-turbo-0613**
+   - **gpt-4-0613** (if available for your account)
+   - **babbage-002**
+   - **davinci-002**
+   
+   **Note**: Not all models support fine-tuning. gpt-4o-mini and gpt-4o are not currently available for fine-tuning.
 3. Upload a training file in JSONL format:
    - Each line must be valid JSON
    - Each line must contain a `messages` array

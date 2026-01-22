@@ -49,6 +49,25 @@ export async function POST(request: NextRequest) {
       jobParams.validation_file = validationFileId
     }
 
+    // Validate that the model supports fine-tuning
+    const fineTunableModels = [
+      'gpt-3.5-turbo',
+      'gpt-3.5-turbo-1106',
+      'gpt-3.5-turbo-0613',
+      'gpt-4-0613',
+      'babbage-002',
+      'davinci-002'
+    ]
+    
+    if (!fineTunableModels.includes(model)) {
+      return NextResponse.json(
+        { 
+          error: `Model ${model} is not available for fine-tuning. Supported models: ${fineTunableModels.join(', ')}` 
+        },
+        { status: 400 }
+      )
+    }
+
     const openaiJob = await openai.fineTuning.jobs.create(jobParams)
 
     // Store job in database
@@ -73,9 +92,17 @@ export async function POST(request: NextRequest) {
     })
   } catch (error: any) {
     console.error('Fine-tune job creation error:', error)
+    
+    // Provide more helpful error messages
+    let errorMessage = error.message || 'Failed to create fine-tuning job'
+    
+    if (error.message?.includes('not available for fine-tuning')) {
+      errorMessage = `${error.message}. Supported models: gpt-3.5-turbo, gpt-3.5-turbo-1106, gpt-3.5-turbo-0613, gpt-4-0613, babbage-002, davinci-002`
+    }
+    
     return NextResponse.json(
-      { error: error.message || 'Failed to create fine-tuning job' },
-      { status: 500 }
+      { error: errorMessage },
+      { status: error.status || 500 }
     )
   }
 }

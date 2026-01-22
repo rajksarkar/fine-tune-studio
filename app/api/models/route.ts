@@ -3,8 +3,18 @@ import { prisma } from '@/lib/prisma'
 
 export async function GET() {
   try {
-    // Get base models
-    const baseModels = ['gpt-4o-mini', 'gpt-4o']
+    // Get base models (for inference/testing)
+    const baseModels = ['gpt-4o-mini', 'gpt-4o', 'gpt-3.5-turbo']
+    
+    // Get fine-tunable models (for training)
+    const fineTunableModels = [
+      'gpt-3.5-turbo',
+      'gpt-3.5-turbo-1106',
+      'gpt-3.5-turbo-0613',
+      'gpt-4-0613',
+      'babbage-002',
+      'davinci-002'
+    ]
 
     // Get all fine-tuned models from completed jobs
     const jobs = await prisma.fineTuneJob.findMany({
@@ -29,6 +39,7 @@ export async function GET() {
 
     return NextResponse.json({
       base: baseModels,
+      fine_tunable: fineTunableModels,
       fine_tuned: fineTunedModels,
     })
   } catch (error: any) {

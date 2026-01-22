@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Fine-Tune Studio",
-  description: "Orchestrate OpenAI fine-tuning for GPT-4o mini and GPT-4o",
+  description: "Orchestrate OpenAI fine-tuning for GPT-3.5-turbo and other supported models",
 };
 
 export default function RootLayout({

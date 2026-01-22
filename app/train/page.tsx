@@ -31,7 +31,7 @@ interface Event {
 }
 
 export default function TrainPage() {
-  const [baseModel, setBaseModel] = useState('gpt-4o-mini')
+  const [baseModel, setBaseModel] = useState('gpt-3.5-turbo')
   const [trainingFile, setTrainingFile] = useState<File | null>(null)
   const [validationFile, setValidationFile] = useState<File | null>(null)
   const [trainingFileId, setTrainingFileId] = useState<string | null>(null)
@@ -235,9 +235,16 @@ export default function TrainPage() {
                   onChange={(e) => setBaseModel(e.target.value)}
                   className="w-full p-2 border rounded"
                 >
-                  <option value="gpt-4o-mini">gpt-4o-mini</option>
-                  <option value="gpt-4o">gpt-4o</option>
+                  <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+                  <option value="gpt-3.5-turbo-1106">gpt-3.5-turbo-1106</option>
+                  <option value="gpt-3.5-turbo-0613">gpt-3.5-turbo-0613</option>
+                  <option value="gpt-4-0613">gpt-4-0613 (if available)</option>
+                  <option value="babbage-002">babbage-002</option>
+                  <option value="davinci-002">davinci-002</option>
                 </select>
+                <p className="text-xs text-gray-500 mt-1">
+                  Note: Not all models support fine-tuning. gpt-3.5-turbo is recommended.
+                </p>
               </div>
 
               <div>
