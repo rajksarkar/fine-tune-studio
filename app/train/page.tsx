@@ -30,6 +30,16 @@ interface Event {
   message: string
 }
 
+interface Models {
+  base: string[]
+  fine_tunable: string[]
+  fine_tuned: Array<{
+    id: string
+    base_model: string
+    createdAt: string
+  }>
+}
+
 export default function TrainPage() {
   const [baseModel, setBaseModel] = useState('gpt-3.5-turbo')
   const [trainingFile, setTrainingFile] = useState<File | null>(null)
@@ -45,10 +55,24 @@ export default function TrainPage() {
   const [loading, setLoading] = useState(false)
   const [systemInstructions, setSystemInstructions] = useState('You are a helpful assistant.')
   const [exporting, setExporting] = useState(false)
+  const [models, setModels] = useState<Models>({ base: [], fine_tunable: [], fine_tuned: [] })
+  const [customModel, setCustomModel] = useState('')
+  const [useCustomModel, setUseCustomModel] = useState(false)
 
   useEffect(() => {
     loadJobs()
+    loadModels()
   }, [])
+
+  const loadModels = async () => {
+    try {
+      const res = await fetch('/api/models')
+      const data = await res.json()
+      setModels(data)
+    } catch (error) {
+      console.error('Failed to load models:', error)
+    }
+  }
 
   useEffect(() => {
     if (currentJob && (currentJob.status === 'validating_files' || currentJob.status === 'queued' || currentJob.status === 'running')) {
@@ -230,20 +254,64 @@ export default function TrainPage() {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-2">Base Model</label>
-                <select
-                  value={baseModel}
-                  onChange={(e) => setBaseModel(e.target.value)}
-                  className="w-full p-2 border rounded"
-                >
-                  <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
-                  <option value="gpt-3.5-turbo-1106">gpt-3.5-turbo-1106</option>
-                  <option value="gpt-3.5-turbo-0613">gpt-3.5-turbo-0613</option>
-                  <option value="gpt-4-0613">gpt-4-0613 (if available)</option>
-                  <option value="babbage-002">babbage-002</option>
-                  <option value="davinci-002">davinci-002</option>
-                </select>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 mb-2">
+                    <input
+                      type="checkbox"
+                      id="useCustomModel"
+                      checked={useCustomModel}
+                      onChange={(e) => {
+                        setUseCustomModel(e.target.checked)
+                        if (e.target.checked) {
+                          setBaseModel(customModel || '')
+                        } else {
+                          setBaseModel('gpt-3.5-turbo')
+                        }
+                      }}
+                      className="w-4 h-4"
+                    />
+                    <label htmlFor="useCustomModel" className="text-sm text-gray-600">
+                      Use custom fine-tuned model ID
+                    </label>
+                  </div>
+                  {useCustomModel ? (
+                    <input
+                      type="text"
+                      value={customModel}
+                      onChange={(e) => {
+                        setCustomModel(e.target.value)
+                        setBaseModel(e.target.value)
+                      }}
+                      placeholder="ft:gpt-3.5-turbo-0125:org::model-id"
+                      className="w-full p-2 border rounded font-mono text-sm"
+                    />
+                  ) : (
+                    <select
+                      value={baseModel}
+                      onChange={(e) => setBaseModel(e.target.value)}
+                      className="w-full p-2 border rounded"
+                    >
+                      <optgroup label="Base Models">
+                        {models.fine_tunable.map((model) => (
+                          <option key={model} value={model}>
+                            {model}
+                          </option>
+                        ))}
+                      </optgroup>
+                      {models.fine_tuned.length > 0 && (
+                        <optgroup label="Fine-Tuned Models">
+                          {models.fine_tuned.map((model) => (
+                            <option key={model.id} value={model.id}>
+                              {model.id} (from {model.base_model})
+                            </option>
+                          ))}
+                        </optgroup>
+                      )}
+                    </select>
+                  )}
+                </div>
                 <p className="text-xs text-gray-500 mt-1">
-                  Note: Not all models support fine-tuning. gpt-3.5-turbo is recommended.
+                  Note: You can use base models or your fine-tuned models as a starting point for further training.
                 </p>
               </div>
 

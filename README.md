@@ -4,7 +4,7 @@ A local web application for orchestrating OpenAI fine-tuning for supported model
 
 ## Features
 
-- **Convert Section**: Convert text, PDF, DOC, and DOCX files to JSONL format for training
+- **Convert Section**: Convert text, Markdown, PDF, DOC, and DOCX files to JSONL format for training
 - **Train Section**: Upload JSONL training files, create fine-tuning jobs, and monitor progress in real-time
 - **Test Section**: Test models with prompts, compare outputs side-by-side (A/B testing), and flag bad responses
 - **Iteration Workflow**: Create training drafts from flagged responses and export them to JSONL format
@@ -60,6 +60,7 @@ A local web application for orchestrating OpenAI fine-tuning for supported model
 1. Go to the **Convert** page (`/convert`)
 2. Upload one or more files:
    - **Text files** (`.txt`, `.text`) - Direct text extraction
+   - **Markdown files** (`.md`, `.markdown`) - Direct text extraction
    - **PDF files** (`.pdf`) - Extracts text content
    - **Word documents** (`.docx`) - Extracts text from DOCX format
    - **Note**: Older `.doc` files are not fully supported; convert to DOCX or PDF first

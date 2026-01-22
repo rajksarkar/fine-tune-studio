@@ -49,6 +49,8 @@ async function extractTextFromFile(file: File): Promise<string> {
   switch (extension) {
     case 'txt':
     case 'text':
+    case 'md':
+    case 'markdown':
       return buffer.toString('utf-8')
 
     case 'pdf':

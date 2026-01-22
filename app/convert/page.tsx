@@ -81,6 +81,7 @@ export default function ConvertPage() {
   const getFileType = (filename: string): string => {
     const ext = filename.split('.').pop()?.toLowerCase()
     if (['txt', 'text'].includes(ext || '')) return 'Text'
+    if (['md', 'markdown'].includes(ext || '')) return 'Markdown'
     if (ext === 'pdf') return 'PDF'
     if (['doc', 'docx'].includes(ext || '')) return 'Word'
     return 'Unknown'
@@ -98,17 +99,17 @@ export default function ConvertPage() {
             
             <div className="mb-4">
               <label className="block text-sm font-medium mb-2">
-                Select Files (Text, PDF, DOC, DOCX)
+                Select Files (Text, Markdown, PDF, DOC, DOCX)
               </label>
               <input
                 type="file"
                 multiple
-                accept=".txt,.text,.pdf,.doc,.docx"
+                accept=".txt,.text,.md,.markdown,.pdf,.doc,.docx"
                 onChange={handleFileSelect}
                 className="w-full p-2 border rounded"
               />
               <p className="text-xs text-gray-500 mt-1">
-                Supported formats: .txt, .pdf, .doc, .docx
+                Supported formats: .txt, .md, .markdown, .pdf, .doc, .docx
               </p>
             </div>
 

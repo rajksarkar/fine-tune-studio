@@ -11,7 +11,7 @@ export default function Home() {
         <Link href="/convert" className="block p-6 border rounded-lg hover:bg-gray-50">
           <h2 className="text-2xl font-semibold mb-2">Convert</h2>
           <p className="text-gray-600">
-            Convert text, PDF, DOC, and other files to JSONL format for training
+            Convert text, Markdown, PDF, DOC, and other files to JSONL format for training
           </p>
         </Link>
         <Link href="/train" className="block p-6 border rounded-lg hover:bg-gray-50">

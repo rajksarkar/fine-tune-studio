@@ -50,6 +50,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate that the model supports fine-tuning
+    // Allow base models that support fine-tuning, or fine-tuned models (starting with "ft:")
     const fineTunableModels = [
       'gpt-3.5-turbo',
       'gpt-3.5-turbo-1106',
@@ -59,10 +60,13 @@ export async function POST(request: NextRequest) {
       'davinci-002'
     ]
     
-    if (!fineTunableModels.includes(model)) {
+    const isFineTunedModel = model.startsWith('ft:')
+    const isBaseModel = fineTunableModels.includes(model)
+    
+    if (!isBaseModel && !isFineTunedModel) {
       return NextResponse.json(
         { 
-          error: `Model ${model} is not available for fine-tuning. Supported models: ${fineTunableModels.join(', ')}` 
+          error: `Model ${model} is not available for fine-tuning. Use a base model (${fineTunableModels.join(', ')}) or a fine-tuned model (starting with "ft:")` 
         },
         { status: 400 }
       )
