@@ -4,6 +4,7 @@ A local web application for orchestrating OpenAI fine-tuning for GPT-4o mini and
 
 ## Features
 
+- **Convert Section**: Convert text, PDF, DOC, and DOCX files to JSONL format for training
 - **Train Section**: Upload JSONL training files, create fine-tuning jobs, and monitor progress in real-time
 - **Test Section**: Test models with prompts, compare outputs side-by-side (A/B testing), and flag bad responses
 - **Iteration Workflow**: Create training drafts from flagged responses and export them to JSONL format
@@ -53,6 +54,32 @@ A local web application for orchestrating OpenAI fine-tuning for GPT-4o mini and
    Navigate to [http://localhost:3000](http://localhost:3000)
 
 ## Usage
+
+### Converting Files to JSONL
+
+1. Go to the **Convert** page (`/convert`)
+2. Upload one or more files:
+   - **Text files** (`.txt`, `.text`) - Direct text extraction
+   - **PDF files** (`.pdf`) - Extracts text content
+   - **Word documents** (`.docx`) - Extracts text from DOCX format
+   - **Note**: Older `.doc` files are not fully supported; convert to DOCX or PDF first
+3. Configure conversion settings:
+   - **Conversion Format**: Choose how to structure training examples
+     - **Knowledge Base**: Content becomes assistant responses
+     - **Q&A**: Extracts questions and answers from content
+     - **Content Only**: Content as user messages
+   - **System Instructions** (optional): Add system messages to all examples
+   - **Chunk Size**: Split large documents (default: 1000 characters)
+   - **Chunk Overlap**: Overlap between chunks for context (default: 200 characters)
+4. Click "Convert to JSONL"
+5. Preview the generated JSONL file
+6. Download the file and use it in the Train page
+
+**Tips:**
+- Large documents are automatically split into chunks for better training
+- The converter ensures minimum 10 lines (adds placeholders if needed)
+- Preview shows the first 10 lines before downloading
+- Generated JSONL files are ready for fine-tuning
 
 ### Training Models
 
@@ -104,11 +131,13 @@ A local web application for orchestrating OpenAI fine-tuning for GPT-4o mini and
 fine-tune-studio/
 ├── app/
 │   ├── api/              # API routes
+│   │   ├── convert/      # File conversion to JSONL
 │   │   ├── files/        # File upload
 │   │   ├── fine-tune/    # Fine-tuning operations
 │   │   ├── test/         # Testing endpoints
 │   │   ├── training-drafts/  # Draft management
 │   │   └── models/       # Model listing
+│   ├── convert/          # Convert files page
 │   ├── train/            # Training page
 │   ├── test/             # Testing page
 │   └── layout.tsx        # Root layout
@@ -123,6 +152,9 @@ fine-tune-studio/
 ```
 
 ## API Routes
+
+### File Conversion
+- `POST /api/convert/to-jsonl` - Convert text, PDF, DOC, DOCX files to JSONL format
 
 ### File Upload
 - `POST /api/files/upload` - Upload JSONL file to OpenAI
@@ -174,6 +206,12 @@ Make sure your `.env` file contains a valid `OPENAI_API_KEY` and that it has the
 - Ensure files are valid JSONL format
 - Check that files have at least 10 lines
 - Verify each line has a `messages` array with proper structure
+
+### File Conversion Issues
+- **PDF parsing errors**: Ensure PDF files are not password-protected or corrupted
+- **DOCX parsing errors**: Make sure files are in the newer DOCX format (not older DOC)
+- **Empty output**: Check that source files contain extractable text content
+- **Large files**: Use chunking settings to split very large documents
 
 ## License
 
