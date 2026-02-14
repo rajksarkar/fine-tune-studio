@@ -7,7 +7,13 @@ export default function Home() {
       <p className="text-lg text-gray-600 mb-8">
         Orchestrate OpenAI fine-tuning for supported models (gpt-3.5-turbo, gpt-4-0613, and others)
       </p>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Link href="/fairfight" className="block p-6 border rounded-lg hover:bg-gray-50 bg-blue-50 border-blue-200">
+          <h2 className="text-2xl font-semibold mb-2">FairFight</h2>
+          <p className="text-gray-600">
+            Watch two LLMs debate a statement with structured summaries and stance updates
+          </p>
+        </Link>
         <Link href="/convert" className="block p-6 border rounded-lg hover:bg-gray-50">
           <h2 className="text-2xl font-semibold mb-2">Convert</h2>
           <p className="text-gray-600">

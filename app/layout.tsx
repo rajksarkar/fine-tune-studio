@@ -18,9 +18,11 @@ export default function RootLayout({
           <div className="container mx-auto flex items-center justify-between">
             <h1 className="text-2xl font-bold">Fine-Tune Studio</h1>
             <div className="flex gap-4">
+              <a href="/fairfight" className="hover:text-gray-300">FairFight</a>
               <a href="/convert" className="hover:text-gray-300">Convert</a>
               <a href="/train" className="hover:text-gray-300">Train</a>
               <a href="/test" className="hover:text-gray-300">Test</a>
+              <a href="/settings" className="hover:text-gray-300">Settings</a>
             </div>
           </div>
         </nav>
